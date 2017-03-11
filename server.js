@@ -21,7 +21,6 @@ app.use(function(req,res,next){
 mongoose.connect("mongodb://localhost:27017/test", function(err,db){
     if(!err){
         console.log("we are connected to mongo");
-        getMessages();
     }
 })
 
@@ -37,11 +36,12 @@ app.post('/api/message', function(req,res){
     res.status(200);
 })
 
+app.get('/api/message', getMessages);
 
 //get all db data
-function getMessages(){
-    Message.find({}).exec(function(err,result){
-        console.log(result);
+function getMessages(req, res){
+    Message.find({}).exec(function(err, result){
+        res.send(result);
     })
 }
 //start node server with express
