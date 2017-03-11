@@ -24,6 +24,11 @@ mongoose.connect("mongodb://localhost:27017/test", function(err,db){
     }
 })
 
+//register a user
+app.post('/auth/register',function(req,res){
+    console.log(req.body);
+})
+
 
 //instanciate new object to and save the post data
 app.post('/api/message', function(req,res){
