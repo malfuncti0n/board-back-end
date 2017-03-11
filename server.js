@@ -1,11 +1,18 @@
+//require and start express
 var express = require('express');
 var app = express();
+
+//require iditional packages
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-//message db model
-var Message = mongoose.model('Message',{
-    msg: String
-});
+
+
+//import authentication controller for registering and logging
+var auth = require('./controllers/authController');
+
+//import message controller for posting and getting messages
+var message = require('./controllers/messageController');
+
 //add json parsing for node
 app.use(bodyParser.json());
 
@@ -24,31 +31,16 @@ mongoose.connect("mongodb://localhost:27017/test", function(err,db){
     }
 })
 
-//register a user
-app.post('/auth/register',function(req,res){
-    console.log(req.body);
-})
-
+//register a user with auth controller register funcction
+app.post('/auth/register', auth.register);
 
 //instanciate new object to and save the post data
-app.post('/api/message', function(req,res){
-    console.log(req.body);
+app.post('/api/message', message.post);
 
-    var message = new Message(req.body);
+//get database message
+app.get('/api/message', message.get);
 
-    message.save();
 
-    res.status(200);
-})
-
-app.get('/api/message', getMessages);
-
-//get all db data
-function getMessages(req, res){
-    Message.find({}).exec(function(err, result){
-        res.send(result);
-    })
-}
 //start node server with express
 var server = app.listen(5000, function(){
     console.log('listening on port ', server.address().port)
